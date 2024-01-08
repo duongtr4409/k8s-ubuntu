@@ -42,4 +42,4 @@ sudo apt-mark hold kubelet kubeadm kubectl
 
 
 # thêm thông tin domain cho apiserver-lb vào file hosts
-#echo "192.168.33.171 apiserver.lb" >> /etc/hosts
+echo "192.168.33.171 apiserver.lb" >> /etc/hosts

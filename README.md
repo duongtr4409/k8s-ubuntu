@@ -13,6 +13,58 @@ link: https://www.youtube.com/watch?v=xvVZCt5QR7k&list=PLxPA4dviHjbDzTU1pnDvn5TG
 5: addWorker1<br>
 6: addWorker2<br>
 
+## Cấu hình load balancer
+
+- tại máy 'lb' cài đặt nginx
+
+```command
+apt install nginx -y
+```
+
+- tạo file cấu hình load stream
+  với nội dung sau
+
+```conf
+stream {
+    upstream kubernetes {
+        server master1_ip:6443 max_fails=3 fail_timeout=30s;
+        server master2_ip:6443 max_fails=3 fail_timeout=30s;
+        server master3_ip:6443 max_fails=3 fail_timeout=30s;
+    }
+server {
+        listen 6443;
+        #listen 443;
+        proxy_pass kubernetes;
+    }
+}
+```
+
+ps: master1_ip | master2_ip | master3_ip : là ip của các máy master
+
+```command
+cd /etc/nginx/
+mkdir k8s-lb.d
+cd /etc/nginx/k8s-lb.d
+touch apiserver.conf
+vi /etc/nginx/k8s-lb./apiserver.conf
+```
+
+- apply file config 'apiserver.conf' cho nginx
+
+thêm nội dung sau vào cuối file '/etc/nginx/nginx.conf'
+
+```conf
+...
+
+include /etc/nginx/k8s-lb.d/*;
+```
+
+-- restart lại nginx
+
+```command
+nginx -s reload
+```
+
 ## Khởi tại cluster
 
 - Tại máy "master" chạy lệnh:

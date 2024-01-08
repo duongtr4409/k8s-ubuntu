@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-swarm-test
+  labels:
+    name: nginx-swarm-test
+    duowngtora: duowngtora
+spec:
+  containers:
+    - name: n1
+      image: nginx:1.17.6
+      resources:
+        limits:
+          cpu: "100m"
+          memory: "128Mi"
+      ports:
+        - containerPort: 80
+    - name: n2
+      image: ichte/swarmtest:node
+      resources:
+        limits:
+          cpu: "100m"
+          memory: "128Mi"
+      ports:
+        - containerPort: 8085
