@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-app2-pod
+  labels:
+    app: app2
+    duowngtora: duowngtora-app2-nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    resources:
+      limits:
+        cpu: 100m
+        memory: 128Mi
+    ports:
+      - containerPort: 80
+
+---
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: httpd-app2-pod
+  labels:
+    app: app2
+    duowngtora: duowngtora-app2-httpd
+spec:
+  containers:
+  - name: httpd
+    image: httpd
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "100m"
+    ports:
+      - containerPort: 80

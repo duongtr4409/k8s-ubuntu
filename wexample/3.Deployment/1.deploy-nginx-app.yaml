@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy-nginx-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: deploy-nginx-app
+  template:
+    metadata:
+      labels:
+        app: deploy-nginx-app
+        duowngtora: duowngtora-deploy-nginx-app
+    spec:
+      volumes:
+        - name: nginx-app-vol
+          hostPath:
+           path: /home/duowngtora/nginxVol
+      containers:
+      - name: nginx
+        image: ichte/swarmtest:node
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: nginx-app-vol
+          mountPath: /usr/share/nginx/html
