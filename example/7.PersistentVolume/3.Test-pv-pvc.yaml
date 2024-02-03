@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-pv-pvc-depley
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: busybox-test-pv-pvc
+  template:
+    metadata:
+      labels:
+        app: busybox-test-pv-pvc
+    spec:
+      volumes:
+      - name: pvc-test1-vol
+        persistentVolumeClaim:
+          claimName: pvc-test1
+      containers:
+      - name: busybox
+        image: busybox
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        command:
+          - sleep
+          - "600"
+        volumeMounts:
+        - name: pvc-test1-vol
+          mountPath: "/PvTest1"

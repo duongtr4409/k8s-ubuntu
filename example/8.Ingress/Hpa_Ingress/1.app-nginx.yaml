@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-test-ingress-deploy
+  labels:
+    app: nginx-test-ingress-deploy
+  namespace: ingress-controller
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx-test-ingress-app
+  template:
+    metadata:
+      labels:
+        app: nginx-test-ingress-app
+    spec:
+      volumes:
+        - name: nginx-cert-vol
+          secret:
+            secretName: secret-nginx-cert
+      containers:
+      - name: nginx
+        image: duowngtora/kubernetes:nginx
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+        ports:
+        - containerPort: 80
+        volumeMounts:
+          - name: nginx-cert-vol
+            mountPath: /certs
+
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-test-ingress-service
+  namespace: ingress-controller
+spec:
+  type: ClusterIP
+  selector:
+    app: nginx-test-ingress-app
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+
+
+--- 

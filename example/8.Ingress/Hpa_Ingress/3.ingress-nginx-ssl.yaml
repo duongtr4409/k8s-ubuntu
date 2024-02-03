@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-test-ssl
+  labels:
+    name: ingress-test-ssl
+spec:
+  tls:
+  - hosts:
+    - duowngtora.test
+    secretName: secret-nginx-cert 
+  rules:
+  - host: duowngtora.test
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: nginx-test-ingress-service
+            port: 
+              number: 80

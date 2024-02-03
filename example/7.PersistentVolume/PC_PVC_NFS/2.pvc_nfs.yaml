@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-nfs-test1
+spec:
+  storageClassName: pv-nfs-test1-class
+  resources:
+    requests:
+      storage: 128Mi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany

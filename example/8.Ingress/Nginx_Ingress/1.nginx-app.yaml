@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-test-ingress-depploy
+  labels:
+    app: nginx-test-ingress-depploy
+  namespace: nginx-ingress
+spec:
+  selector:
+    matchLabels:
+      app: nginx-test-ingress-app
+  template:
+    metadata:
+      labels:
+        app: nginx-test-ingress-app
+    spec:
+      volumes:
+      - name: nginx-secret-vol
+        secret:
+          secretName: secret-nginx-cert
+      containers:
+      - name: nginx
+        image: duowngtora/kubernetes:nginx
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "300m"
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: nginx-secret-vol
+          mountPath: /certs
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: secret-nginx-cert
+  namespace: nginx-ingress
+type: kubernetes.io/tls
+data:
+  tls.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUN1VENDQWFFQ0ZGNEk3Z3NMMFlORzBnZWp5cG5zb1NhQ1o0R3dNQTBHQ1NxR1NJYjNEUUVCQ3dVQU1Ca3gKRnpBVkJnTlZCQU1NRG1SMWIzZHVaM1J2Y21FdWJtVjBNQjRYRFRJME1ERXhNekEwTVRJeE1sb1hEVEkxTURFeApNakEwTVRJeE1sb3dHVEVYTUJVR0ExVUVBd3dPWkhWdmQyNW5kRzl5WVM1dVpYUXdnZ0VpTUEwR0NTcUdTSWIzCkRRRUJBUVVBQTRJQkR3QXdnZ0VLQW9JQkFRRE4yM0JIUkthRjJka0xhQm9JSTU5Q2l5azhxeFYzMTFGcm5DZUcKQmhtWVlxNlhsdXljQW1CVmFka0NjUWpGNGtCcGhqc1dmbDhwdGs1VWdzVjkvU0tYeTIvcjU2ZzlmalZiZS9sWAprT2Z1TGhtbDNSOTA1c05QK1k2d1ZEZTN3VktsbnRHZForR3pCQnFpLzBnc0g4WU9BdU5OazFIYVBMa1BTYXMyCmhITm5GSTkweS90RXZCcnEzQUJIQWhxY0p6RGNZcVpLWWJRTWtJamlpZHdzWEduVms1UFBTVVlPazZ2b2tBUTAKbTFNQUJuVTFldW5WR2tUd01PYXp2ekRXcVV0eUJKQ3l1UWFacWowM0hNTkw2ZVF0cm5OVzBkRVYxQVptYXhmUgp0R3JxUXYxbzBXUEc1TUVHbDhzL3ZJeEl6YldHMjZXb1VFYTNjVVJyNWdsdGlZVjVBZ01CQUFFd0RRWUpLb1pJCmh2Y05BUUVMQlFBRGdnRUJBSlEvQVpQUFZNLytrdUF1dU9Icm54TjQ4SHNuUEo0ZG0zRDNPVk5MMVNSZUptUysKREpaQmpMOEhMUkhkWG5XMHFrdXlpY0FKRHBJZW4rb1RNRDlLcmZjaEJYSGtWQXFVNnhpUEFZTlBzMUhEaFE0bQpFSjMrbXNTb1hWYmRYRm9qUjFHT1QrdmVQQkdBNmppTmdOZWpPU0REeG1TOEUxYUtiOUdUdlBBZTl4ejV1STkrCkJseDdiY0Z0NnZFck8xUm04WFlSOTlJemNJUExwQ3lJdVVUU3ZsbSt2azIxcW82a1NROTFLanhPVCtCSXJkSGQKNFI3ZHdjQUVxYWZucUdKSFNxUnpDYm03aDRrVVVBdHRObkxMY0ZycUlySkszRWZhd0dmUTVFUlF4dFpzQ3FLSQo3YkpGb0hSdG05aU1uM3h2M29FZHpjN2Z1elFQYWROTkxtV1JkQjA9Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+  tls.key: LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JSUV2Z0lCQURBTkJna3Foa2lHOXcwQkFRRUZBQVNDQktnd2dnU2tBZ0VBQW9JQkFRRE4yM0JIUkthRjJka0wKYUJvSUk1OUNpeWs4cXhWMzExRnJuQ2VHQmhtWVlxNlhsdXljQW1CVmFka0NjUWpGNGtCcGhqc1dmbDhwdGs1VQpnc1Y5L1NLWHkyL3I1Nmc5ZmpWYmUvbFhrT2Z1TGhtbDNSOTA1c05QK1k2d1ZEZTN3VktsbnRHZForR3pCQnFpCi8wZ3NIOFlPQXVOTmsxSGFQTGtQU2FzMmhITm5GSTkweS90RXZCcnEzQUJIQWhxY0p6RGNZcVpLWWJRTWtJamkKaWR3c1hHblZrNVBQU1VZT2s2dm9rQVEwbTFNQUJuVTFldW5WR2tUd01PYXp2ekRXcVV0eUJKQ3l1UWFacWowMwpITU5MNmVRdHJuTlcwZEVWMUFabWF4ZlJ0R3JxUXYxbzBXUEc1TUVHbDhzL3ZJeEl6YldHMjZXb1VFYTNjVVJyCjVnbHRpWVY1QWdNQkFBRUNnZ0VBQS91ZTdJSVRocnQwUzVnMENMeEh0STNrdWx2RkNwQ0w3cjBTdHJFZmhhZEQKSVlPMkNENnpobk9KMDFaRWlTK2JkMjgxYlhYOGVWNGhuZGo1NFRvb2xTOUdkeFlBVjFBOTBBdFNBN08yQ1JHegpSVlpGNllrZGRrcXB6QmVWREdVZEtEOHVaeEUvZUtzM3FMZXZ1Y3JUbGluUUpBd1pwVk5QY1ZCSGs4SjBTU1kvCnhkQTU1NHVVUEFUVXV0NXE1Z3JjcU9mUWtHZFRuYll0eDZCdFVSeEJlY2paZmozYUVQNjJuQjV3c2tLeDFtYW8KdURnbUpoSG5pNW4vdHB5cnJwaXM5Qm9IZWJic1REMDVWMzFIZVJjTnNWY2VNTllZcmJpOExSRUNqQUFucHZhNAp6QVpFMUxobTBCaEl2bEN6dnNabjZEN0RqTlRlcGVuOStJMG4vYmtBQVFLQmdRRFNydzlaUUNKN2gvNGpUaWN5CkEvcTh6MDhrNXIwY0xrZDA5VzFya0EzaFRUdXdNTEw0TWl3c0VrYStaMGdxdlp2cno2dUZoTGNmam9uV2dJWTMKVDdna1ZuQmhYV1VMSmZqTmkvbkRMaW5VVnF0RWFNQ1lRbS84RGxhb0JrTWNpa08zTnlaN0NaZG5lWlJ2SGgyZgplZTJTb2VNU1pSZVdhaUJreDRBc3EzWVZlUUtCZ1FENklwdVVWZDJBeDVrUmhsb2w0SC9sS0hBVVVyUzluVkZCCmw5N2Z2cmIrMVdhU1BRRFhZWDcvcTBYZ3R0WDJ4c0h1a2cwWXd3MDNwc3E4RnVGTFBXRisrZDNDWE90bU9HN2wKYmdvczNLSnRjRW1KWXh0cUg5TWFJYnV1bE1vMWhLcUhEWVA1R0U4UEozRUZNa20yem5EMUlwMWNiZkFjd3hlUApMZHgzT3dMd0FRS0JnRGF4TlVYUkRXS09JaDRlS3JTa0xkSVg2dzdFUzNGbVhpeHhqZTh2WFRzUXBwOE5kVmhUCkJmNkczQkNQbFQ5cksyL2k0RDd2L2UzV1BkZ09VMGxHaTZIN1FuODBGSWY1V29aWmdRUDNGdXJGZVA1d1J4Yi8Kb0R5SnFGdEVET1g2eXF0a1NMd0YrR1RuUGU0K25pZ0pLZkEzMEUrMUtKTm1oM1JDQ2ZjT3A3L1pBb0dCQU5acwpIRnBJVVIwMy9TdGN0S0tMbEpkbzFzdFZLc0x3dk5zeHlVaWNRRnFyck1YbnJYVDBpdDI0Z0twbGtYMStYSGlhCmtzZUxUU1ZMd2JjREZoWmRnOXBKYjZSUjZ5a3hiejhWMlhzamw4bWczQ2o5NEY1VThhNFJCTVpmbmdmS3RqUVgKamU1V3ZFOE5USUZiM256cTgwSHdibHp4a1VmV3BiZURaTjZBbzhBQkFvR0JBTG5aa2tNRENBQWwvQ3o2N1F5WQoxMnY0QlYwOVoybitmZlRzWngzVmRTZGJmMUtsZVFzM1M4R1dYVjY1MytKMTBYajR5WEUwME9lcDFtTnNwUFpzCmhXN0MzUnZUV0FpN2RhcmYzNlB5YkxGTTV1Z0dZRDg1SFc2Slo4aDFWSUlJeWFCWkZtamJTV21aL0lkeE00MDYKSWE0MGNKT3YzRTlqaWJ4dzJOQ28yclQ3Ci0tLS0tRU5EIFBSSVZBVEUgS0VZLS0tLS0K
+
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-ingress-test-service
+  namespace: nginx-ingress
+spec:
+  selector:
+    app: nginx-test-ingress-app
+  ports:
+  - port: 80
+    targetPort: 80
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-test-ingress-service-nodeport
+  namespace: nginx-ingress
+spec:
+  type: NodePort
+  selector:
+    app: nginx-test-ingress-app
+  ports:
+  - port: 80
+    targetPort: 80
+    nodePort: 31080

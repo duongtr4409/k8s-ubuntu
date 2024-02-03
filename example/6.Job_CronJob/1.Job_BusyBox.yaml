@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: busybox-job
+spec:
+
+  # so lan chay Pod thanh cong
+  completions: 10
+
+  # co lan chay Pod loi
+  backoffLimit: 3
+
+  # so Pod chay song song
+  parallelism: 2
+
+  # thoi gian toi da cua JOB (tinh bang giay(s)): het thoi gian se dung Job
+
+  # ttlSecondsAfterFinished: 100
+  template:
+    spec:
+      containers:
+      - name: busybox
+        image: busybox
+        command: 
+          - /bin/sh
+          - -c
+          - date; echo "DuowngTora in Busybox"
+      restartPolicy: Never

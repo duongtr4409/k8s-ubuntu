@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: rs-nginx
+  labels:
+    rsapp: rs-nginx
+    duowngtora: duowngtora-rs-nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      name: nginx
+      labels:
+        app: nginx
+        duowngtora: duowngtora-rs-pod-nginx
+    spec:
+      volumes:
+        - name: rs-nginx-vol
+          hostPath: 
+           path: /home/rsnginx/
+      containers:
+        - name: nginx
+          image: nginx
+          resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: rs-nginx-vol
+              mountPath: /usr/share/nginx/html
